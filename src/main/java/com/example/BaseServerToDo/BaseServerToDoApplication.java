@@ -10,4 +10,7 @@ public class BaseServerToDoApplication {
 		SpringApplication.run(BaseServerToDoApplication.class, args);
 	}
 
+	// Логирование пользователя хз как
+	// News тоже хз как
+	// Как-то прописать, чтобы пользователь получал только свои данные
 }

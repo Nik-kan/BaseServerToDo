@@ -1,23 +1,25 @@
 package com.example.BaseServerToDo.service;
 
-import com.example.BaseServerToDo.dto.CreateTaskDto;
-import com.example.BaseServerToDo.dto.GetTaskDto;
+import com.example.BaseServerToDo.dto.*;
 import com.example.BaseServerToDo.entity.TaskEntity;
 import com.example.BaseServerToDo.repository.TaskRepository;
-import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TaskService {
 
-    @Autowired
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
+    private final TaskDtoConvector taskDtoConvector;
+
+// это мне для наглядности
+//    public TaskService(TaskRepository taskRepository) {
+//        this.taskRepository = taskRepository;
+//    }
 
     public TaskEntity createTask(@NonNull CreateTaskDto createTaskDto) {
         TaskEntity taskEntity = TaskEntity.builder()
@@ -29,24 +31,13 @@ public class TaskService {
         return taskRepository.save(taskEntity);
     }
 
-    // Прошлый вариант
-    //    public TaskEntity createTask(CreateTaskDto createTaskDto) {
-//        TaskEntity taskEntity = new TaskEntity();
-//        taskEntity.setTitle(createTaskDto.getTitle());
-//        taskEntity.setDate(createTaskDto.getDate());
-//        taskEntity.setUserId(createTaskDto.getUserId());
-//        taskRepository.save(taskEntity);
-
     public List<GetTaskDto> getAllTasksByUserId(@NonNull Long userId) {
-        return taskRepository.findById(userId).stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        return taskRepository.findAll()
+                .stream()
+                .filter(TaskEntity -> TaskEntity.getUserId().equals(userId))
+                .map(taskDtoConvector::convertTaskToDTO)
+                .toList();
     }
-
-    // Прошлый вариант
-//    public List<GetTaskDto> getAllTasksById() {
-//        return taskRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
-//    }   // как сделать, чтобы пользователь получал только свои задачи
 
     public void deleteTaskById(@NonNull Long id) {
         taskRepository.deleteById(id);
@@ -70,16 +61,5 @@ public class TaskService {
         TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(() -> new NullPointerException("Task not found"));
         taskEntity.setTaskStatus(status);
         return taskRepository.save(taskEntity);
-    }
-
-    public GetTaskDto convertToDTO(@NonNull TaskEntity taskEntity) {
-        GetTaskDto getTaskDto = new GetTaskDto();
-        getTaskDto.setId(taskEntity.getId());
-        getTaskDto.setTitle(taskEntity.getTitle());
-        getTaskDto.setDate(taskEntity.getDate());
-        getTaskDto.setUserId(taskEntity.getUserId());
-        getTaskDto.setTaskStatus(taskEntity.isTaskStatus());
-        getTaskDto.setTaskStatus(taskEntity.isTaskStatus());
-        return getTaskDto;
     }
 }

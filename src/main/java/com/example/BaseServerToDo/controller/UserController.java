@@ -6,7 +6,6 @@ import com.example.BaseServerToDo.entity.UserEntity;
 import com.example.BaseServerToDo.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +19,7 @@ import java.util.List;
 @RequestMapping("/user_data")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @PostMapping
     public ResponseEntity<UserEntity> replaceUser(@RequestBody ReplaceUserDto replaceUserDto) {
@@ -43,26 +41,4 @@ public class UserController {
         userService.deleteUserById(id);
         return HttpStatus.OK;
     }
-
-    // Прошлые варианты методов
-
-//    @PostMapping
-//    public void replaceUser(@RequestBody ReplaceUserDto replaceUserDto) {
-//        userService.replaceUser(replaceUserDto);
-//    }
-
-//    @GetMapping
-//    public List<GetUserDto> getAllUsers(){
-//        return userService.getAllUsers();
-//    }
-
-//    @GetMapping("/{id}")
-//    public GetUserDto getUserById(@PathVariable("id") Long id){
-//        return userService.getUserById(id);
-//    }
-
-//    @DeleteMapping("/{id}")
-//    public void deleteUserById(@PathVariable("id") Long id){
-//        userService.deleteUserById(id);
-//    }
 }

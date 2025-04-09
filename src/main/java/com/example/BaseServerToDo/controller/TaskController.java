@@ -5,8 +5,8 @@ import com.example.BaseServerToDo.dto.GetTaskDto;
 import com.example.BaseServerToDo.entity.TaskEntity;
 import com.example.BaseServerToDo.service.TaskService;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +19,7 @@ import java.util.List;
 @RequestMapping("/tasks")
 public class TaskController {
 
-    @Autowired
-    private TaskService taskService;
+    private final TaskService taskService;
 
     @PostMapping
     public ResponseEntity<TaskEntity> createTask(@RequestBody CreateTaskDto createTaskDto){
@@ -45,12 +44,12 @@ public class TaskController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<TaskEntity> patchTask(@PathVariable Long id, @RequestBody CreateTaskDto createTaskDto) {
+    public ResponseEntity<TaskEntity> patchTask(@PathVariable @NonNull Long id, @RequestBody @NonNull CreateTaskDto createTaskDto) {
         return new ResponseEntity<>(taskService.patchTask(id, createTaskDto), HttpStatus.OK);
     }
 
     @PatchMapping
-    public ResponseEntity<TaskEntity> patchTaskStatus (@PathVariable Long id, boolean status){
+    public ResponseEntity<TaskEntity> patchTaskStatus (@PathVariable @NonNull Long id, boolean status){
         return new ResponseEntity<>(taskService.patchTaskStatus(id, status), HttpStatus.OK);
     }
 }

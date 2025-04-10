@@ -3,7 +3,7 @@ package com.example.BaseServerToDo.dto;
 import com.example.BaseServerToDo.entity.UserEntity;
 import lombok.NonNull;
 
-public class UserDtoConvector {
+public class UserDtoConvertor {
 
     public GetUserDto convertUserToDTO(@NonNull UserEntity userEntity) {
         GetUserDto getUserDto = new GetUserDto();

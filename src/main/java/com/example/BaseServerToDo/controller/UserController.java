@@ -4,8 +4,8 @@ import com.example.BaseServerToDo.dto.GetUserDto;
 import com.example.BaseServerToDo.dto.ReplaceUserDto;
 import com.example.BaseServerToDo.entity.UserEntity;
 import com.example.BaseServerToDo.service.UserService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@AllArgsConstructor
 @RequestMapping("/user_data")
 public class UserController {
 
@@ -34,6 +33,12 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<GetUserDto> getUserById(@PathVariable("id") Long id) {
         return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
+    }
+
+    @GetMapping
+    public Page<GetUserDto> getPaginatedUsers(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        return userService.getPaginatedUsers(page, size);
     }
 
     @DeleteMapping("/{id}")

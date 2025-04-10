@@ -5,8 +5,15 @@ import com.example.BaseServerToDo.entity.TaskEntity;
 import com.example.BaseServerToDo.repository.TaskRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -14,12 +21,8 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskRepository;
-    private final TaskDtoConvector taskDtoConvector;
+    private final TaskDtoConvertor taskDtoConvector;
 
-// это мне для наглядности
-//    public TaskService(TaskRepository taskRepository) {
-//        this.taskRepository = taskRepository;
-//    }
 
     public TaskEntity createTask(@NonNull CreateTaskDto createTaskDto) {
         TaskEntity taskEntity = TaskEntity.builder()
@@ -37,6 +40,17 @@ public class TaskService {
                 .filter(TaskEntity -> TaskEntity.getUserId().equals(userId))
                 .map(taskDtoConvector::convertTaskToDTO)
                 .toList();
+    }
+
+    public Page<GetTaskDto> getPaginatedTasks(int pageNo, int pageSize, @NonNull Long userId) {
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Page<TaskEntity> taskPage = taskRepository.findAll(pageable);
+        List<GetTaskDto> getTaskDtoList = taskPage.getContent()
+                .stream()
+                .filter(TaskEntity -> TaskEntity.getUserId().equals(userId))
+                .map(taskDtoConvector::convertTaskToDTO)
+                .collect(Collectors.toList());
+        return new PageImpl<>(getTaskDtoList, pageable, taskPage.getTotalElements());
     }
 
     public void deleteTaskById(@NonNull Long id) {

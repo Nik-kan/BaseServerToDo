@@ -10,4 +10,5 @@ public class BaseServerToDoApplication {
 		SpringApplication.run(BaseServerToDoApplication.class, args);
 	}
 
+	// Логирование пользователя хз как
 }
